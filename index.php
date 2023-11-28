@@ -8,15 +8,25 @@
     <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet" />
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <link rel="stylesheet" href="css/style.css" />
+    <style>.error-message {
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+</style>
   </head>
   <body>
+
+
+
     <section class="ftco-section">
       <div class="container">
         <div class="row justify-content-center">
           <div class="col-md-6 text-center mb-5">
-			<img src="./img/logo.svg" style="width: 44px;" alt="">
+            <img src="./img/logo.svg" style="width: 44px" alt="" />
             <h2 class="heading-section">Welcome to the site</h2>
           </div>
         </div>
@@ -25,7 +35,7 @@
             <div class="wrap d-md-flex">
               <!-- Imaage -->
               <div class="login-img">
-                <img src="/img/login-img.png" alt="" />
+                <img src="./img/spoongle_logo_1.jpg" alt="" />
               </div>
               <!-- Content -->
               <div class="login-wrap p-4 p-md-5">
@@ -33,26 +43,20 @@
                   <div class="w-100">
                     <h3 class="mb-4">Sign In</h3>
                   </div>
-                  <!-- <div class="w-100">
-                    <p class="social-media d-flex justify-content-end">
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-facebook"></span></a>
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-twitter"></span></a>
-                    </p>
-                  </div> -->
                 </div>
 
 
-                <form action="#" class="signin-form">
+                <form action="login.php" method="post" class="signin-form">
                   <div class="form-group mb-3">
                     <label class="label" for="name">Emai;</label>
-                    <input type="email" class="form-control" placeholder="Email" required />
+                    <input type="email" name="email" class="form-control" placeholder="Email"  />
                   </div>
                   <div class="form-group mb-3">
                     <label class="label" for="password">Password</label>
-                    <input type="password" class="form-control" placeholder="Password" required />
+                    <input type="password" name="password" class="form-control" placeholder="Password" required />
                   </div>
                   <div class="form-group">
-                    <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
+                    <button type="submit" name="login" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
                   </div>
                   <div class="form-group d-md-flex">
                     <div class="w-50 text-left">
@@ -63,14 +67,14 @@
                       </label>
                     </div>
                     <div class="w-50 text-md-right">
-                      <a href="#">Forgot Password</a>
+                      <a href="forgetpass.html">
+                       Forget Pass</a>
+
                     </div>
                   </div>
                 </form>
-
-
-                
-                <p class="text-center">Not a member? <a href="registration.html">Sign Up</a></p>
+       
+                <p class="text-center">Not a member? <a href="registration.php">Sign Up</a></p>
               </div>
             </div>
           </div>

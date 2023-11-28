@@ -1,3 +1,30 @@
+<?php
+include "./conf/auth_session.php";
+
+session_start();
+
+include "./conf/db_con.php";
+
+
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+  $name = $_POST["name"];
+  $email = $_POST["email"];
+  $password = $_POST["password"];
+
+
+  $sql = "INSERT INTO users (name, email, password,created_at) VALUES ('$username', '$email', '$password',now())";
+
+  if ($conn->query($sql) === TRUE) {
+    echo "New record created successfully";
+  } else {
+    var_dump("Error: " . $sql . "<br>" . $conn->error);
+  }
+  }
+
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -32,43 +59,39 @@
                   <div class="w-100">
                     <h3 class="mb-4">Registration</h3>
                   </div>
-                  <!-- <div class="w-100">
-                    <p class="social-media d-flex justify-content-end">
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-facebook"></span></a>
-                      <a href="#" class="social-icon d-flex align-items-center justify-content-center"><span class="fa fa-twitter"></span></a>
-                    </p>
-                  </div> -->
-                </div>
-                <form action="#" class="signin-form">
 
+                </div>
+                <form action="registration.php" method="post" class="signin-form">
+
+                <br>
                   <div class="form-group mb-3">
                     <label class="label" for="name">Name</label>
-                    <input type="text" class="form-control" placeholder="Name" required />
+                    <input type="text" name="name" class="form-control" placeholder="Name" required />
                   </div>
 
                   <div class="form-group mb-3">
                     <label class="label" for="name">Email</label>
-                    <input type="text" class="form-control" placeholder="demo@mail.com" required />
+                    <input type="text" name="email" class="form-control" placeholder="demo@mail.com" required />
                   </div>
 
                   <div class="form-group mb-3">
                     <label class="label" for="password">Password</label>
-                    <input type="password" class="form-control" placeholder="Password" required />
+                    <input type="password" name="password" class="form-control" placeholder="Password" required />
                   </div>
 
                   <div class="form-group mb-3">
                     <label class="label" for="password">Confirm Password</label>
-                    <input type="password" class="form-control" placeholder="Confirm Password" required />
+                    <input type="password" name="cPassword" class="form-control" placeholder="Confirm Password" required />
                   </div>
 
                   <div class="form-group">
-                    <button type="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
+                    <button type="submit" name="submit" class="form-control btn btn-primary rounded submit px-3">Sign In</button>
                   </div>
                 </form>
-                <p class="text-center">Already have a account ? <a href="index.html">Sign In</a></p>
+                <p class="text-center">Already have a account ? <a href="index.php">Sign In</a></p>
               </div>
 
-             
+
             </div>
           </div>
         </div>
