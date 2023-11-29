@@ -1,5 +1,5 @@
-<?php 
- 
- session_start();
- session_destroy();
- header('location:index.php');
+<?php
+
+include 'conf/auth_session.php';
+
+AuthSession::destroy();
