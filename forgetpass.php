@@ -86,7 +86,7 @@
 
     <form action="forget.php" method="post" class="border border-black p-5  bg-gradient">
       <label for="mail">Email</label>
-      <input type="email" id="name" name="name" class="form-control" placeholder="Enter your email address" required onblur="validateName(name)" />
+      <input type="email" id="name" name="email" class="form-control" placeholder="Enter your email address" required  />
       <br />
       <button type="submit" class=" ">Submit</button>
       <span id="nameError" style="display: none">There was an error with your email</span>

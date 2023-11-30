@@ -1,39 +1,37 @@
 <?php
 
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php';
+include_once './conf/db_con.php';
 
-$mail = new PHPMailer(true);
+include_once 'Notify.php';
 
-try {
-	$mail->SMTPDebug = 2;									 
-	$mail->isSMTP();										 
-	$mail->Host	 = 'sandbox.smtp.mailtrap.io';				 
-	$mail->SMTPAuth = true;							 
-	$mail->Username = 'f8e08ed4155b95';				 
-	$mail->Password = '6e2a89d59d59a0';					 
-	$mail->SMTPSecure = 'tls';							 
-	$mail->Port	 = 2525; 
+$dbHost = "localhost";
+$dbUser = "root";
+$dbPassword = "";
+$dbName = "php_login";
 
-    $mail->setFrom('info@mailtrap.io', 'Mailtrap');
-    $mail->addReplyTo('info@mailtrap.io', 'Mailtrap');
-    $mail->addAddress('recipient1@mailtrap.io', 'Tim');
-    $mail->addCC('cc1@example.com', 'Elena');
-    $mail->addBCC('bcc1@example.com', 'Alex');
-	
-	$mail->isHTML(true);								 
-	$mail->Subject = 'Subject';
-	$mail->Body = 'HTML message body in <b>bold</b> ';
-	$mail->AltBody = 'Body in plain text for non-HTML mail clients';
-	$mail->send();
-	echo "Mail has been sent successfully!";
-} catch (Exception $e) {
-	echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+if (isset($_POST['email'])) {
+
+    $email = $_POST['email'];
+
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+
+        $row = $result->fetch_assoc();
+
+        $db = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPassword);
+
+        $user = new User($row['id'], $row['name'], $row['email'],  password_hash($row['password'], PASSWORD_BCRYPT));
+
+        $notify = new Notify($db);
+
+        $notify->sendOtpEmail($user);
+
+    } else {
+
+        echo 'Email not found';
+    }
 }
-
-
-
-
-?>
