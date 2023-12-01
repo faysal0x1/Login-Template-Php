@@ -1,110 +1,49 @@
 <html>
-  <head>
-    <title>Forgot Password Form</title>
-    <link rel="stylesheet" href="css/style.css" />
-    <style>
-      hr {
-        background: #4bc970;
-        height: 1px;
-        border: 0;
-        border-top: 1px solid #ccc;
-        padding: 0;
-        text-align: right;
-        width: 5%;
-        float: center;
-      }
-      span {
-        color: red;
-      }
-      label {
-        padding-top: 15px;
-        font-weight: bold;
-      }
 
-      body {
-        font-size: 13px;
-        font-family: "Nunito", sans-serif;
-        color: #384047;
-      }
-
-      form {
-        font-size: 16px;
-        max-width: 300px;
-        margin: 10px auto;
-        padding: 10px 20px;
-        background: #f4f7f8;
-        border-radius: 0px;
-      }
-
-      h1 {
-        padding-top: 2em;
-        font-size: 32px;
-        text-align: center;
-      }
-
-      h3 {
-        padding-top: 1em;
-        font-size: 20px;
-        text-align: center;
-      }
-
-      button {
-        padding: 12px 39px 13px 39px;
-        color: #fff;
-        background-color: #e3b04b;
-        font-size: 18px;
-        text-align: center;
-        font-style: normal;
-        border: 1px solid #3ac162;
-        /* //border-width: 1px 1px 3px; */
-        margin-bottom: 10px;
-        overflow: hidden;
-      }
-
-      label {
-        display: block;
-        margin-bottom: 8px;
-      }
-      .custom-gradient {
-  background-image: linear-gradient(to right, #f00 0%, #00f 50%, #f00 100%);
-}
-
-
-      @media screen and (min-width: 480px) {
-        form {
-          max-width: 480px;
+<head>
+<meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forgot Password Form</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
-      }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
     </style>
-  </head>
+</head>
 
-  <body>
+<body>
 
 
-   <div style="margin-top: 155px;" class=" bg-">
-    <h3>Enter your email address to reset your password</h3>
 
-    <form action="forget.php" method="post" class="border border-black p-5  bg-gradient">
-      <label for="mail">Email</label>
-      <input type="email" id="name" name="email" class="form-control" placeholder="Enter your email address" required  />
-      <br />
-      <button type="submit" class=" ">Submit</button>
-      <span id="nameError" style="display: none">There was an error with your email</span>
-    </form>
 
-   </div>
 
-    <script>
-      function validateName(x) {
-        var re = /[A-Za-z@0-9.]/;
-        if (re.test(document.getElementById(x).value)) {
-          return true;
-        } else {
-          // document.getElementById(x ).style.background ='#e35152';
-          document.getElementById(x + "Error").style.display = "block";
-          return false;
-        }
-      }
-    </script>
-  </body>
+
+  <div class="container">
+        <form class="col-md-6 border border-black p-5 " action="forget.php" method="post">
+            <h2 class="mb-4">Forget Password</h2>
+            <div class="mb-3">
+                <label for="inputEmail" class="form-label">Email address</label>
+                <input type="email" id="name" name="email" class="form-control" placeholder="Enter your email address" required  />
+            </div>
+            <div class="mb-3">
+                <p>Enter the email address associated with your account. We'll send you a link to reset your password.</p>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
