@@ -2,7 +2,7 @@
 require_once "./conf/auth_session.php";
 
 include "./conf/db_con.php";
-
+AuthSession::init();
 
 AuthSession::checkLoginStatus();
 ?>

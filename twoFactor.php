@@ -1,114 +1,114 @@
-<html>
+<?php
+require_once 'conf/auth_session.php';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
 
 <head>
-    <title>Forgot Password Form</title>
-    <link rel="stylesheet" href="css/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        hr {
-            background: #4bc970;
-            height: 1px;
-            border: 0;
-            border-top: 1px solid #ccc;
-            padding: 0;
-            text-align: right;
-            width: 5%;
-            float: center;
-        }
-
-        span {
-            color: red;
-        }
-
-        label {
-            padding-top: 15px;
-            font-weight: bold;
-        }
-
         body {
-            font-size: 13px;
-            font-family: "Nunito", sans-serif;
-            color: #384047;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
         }
 
-        form {
-            font-size: 16px;
-            max-width: 300px;
-            margin: 10px auto;
-            padding: 10px 20px;
-            background: #f4f7f8;
-            border-radius: 0px;
-        }
-
-        h1 {
-            padding-top: 2em;
-            font-size: 32px;
+        .otp-input {
+            width: 3rem;
+            /* Adjust the width as needed */
+            height: 3rem;
             text-align: center;
+            font-size: 1.5rem;
+            margin: 0 0.5rem;
         }
 
-        h3 {
-            padding-top: 1em;
-            font-size: 20px;
-            text-align: center;
-        }
-
-        button {
-            padding: 12px 39px 13px 39px;
-            color: #fff;
-            background-color: #e3b04b;
-            font-size: 18px;
-            text-align: center;
-            font-style: normal;
-            border: 1px solid #3ac162;
-            /* //border-width: 1px 1px 3px; */
-            margin-bottom: 10px;
-            overflow: hidden;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-        }
-
-        .custom-gradient {
-            background-image: linear-gradient(to right, #f00 0%, #00f 50%, #f00 100%);
-        }
-
-
-        @media screen and (min-width: 480px) {
-            form {
-                max-width: 480px;
-            }
+        .otp-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
         }
     </style>
+    <title>OTP Verification</title>
 </head>
 
 <body>
 
+    <?php
+    // echo AuthSession::get('email');
+    $session = new AuthSession();
+    $session->init();
 
-    <div style="margin-top: 155px;" class=" bg-">
-        <h3>Enter your email address to reset your password</h3>
+    $email = $session->get('email');
+    if (!$email) {
+        header('Location: login.php');
+        exit;
+    }
 
-        <form action="forget.php" method="post" class="border border-black p-5  bg-gradient">
-            <label for="mail">Email</label>
-            <input type="email" id="name" name="name" class="form-control" placeholder="Enter your email address" required onblur="validateName(name)" />
-            <br />
-            <button type="submit" class=" ">Submit</button>
-            <span id="nameError" style="display: none">There was an error with your email</span>
+
+
+    ?>
+
+    <div class="container text-center">
+        <h2 class="mb-4">Two Step Verification</h2>
+        <form action="twoFactor.php" method="post" id="otpForm">
+            <div class="otp-container">
+                <input type="text" class="form-control otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="form-control otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="form-control otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="form-control otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="form-control otp-input" maxlength="1" pattern="\d" required>
+                <input type="text" class="form-control otp-input" maxlength="1" pattern="\d" required>
+            </div>
+            <button type="button" class="btn btn-primary mt-3" onclick="submitOtpForm()">Verify OTP</button>
         </form>
-
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function validateName(x) {
-            var re = /[A-Za-z@0-9.]/;
-            if (re.test(document.getElementById(x).value)) {
-                return true;
-            } else {
-                // document.getElementById(x ).style.background ='#e35152';
-                document.getElementById(x + "Error").style.display = "block";
-                return false;
-            }
+        function submitOtpForm() {
+            // Get all OTP input values
+            var otpValues = document.querySelectorAll('.otp-input');
+
+            // Convert the NodeList to an array and join the values into a single string
+            var otpString = Array.from(otpValues).map(input => input.value).join('');
+
+            // Redirect to process_otp.php with the OTP string as a query parameter
+            window.location.href = 'twofactor_process.php?otp=' + otpString;
         }
+
+
+        document.addEventListener("input", function(e) {
+            if (e.target.classList.contains("otp-input")) {
+                var maxLength = parseInt(e.target.maxLength, 10);
+                var currentLength = e.target.value.length;
+
+                if (currentLength === maxLength) {
+                    var nextInput = e.target.nextElementSibling;
+                    if (nextInput) {
+                        nextInput.focus();
+                    }
+                }
+            }
+        });
+
+        document.addEventListener("keydown", function(e) {
+            if (e.key === "Backspace") {
+                var currentInput = document.activeElement;
+
+                if (currentInput.classList.contains("otp-input") && currentInput.value.length === 0) {
+                    var previousInput = currentInput.previousElementSibling;
+
+                    if (previousInput) {
+                        previousInput.focus();
+                    }
+                }
+            }
+        });
     </script>
 </body>
 

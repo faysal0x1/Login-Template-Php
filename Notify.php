@@ -94,8 +94,64 @@ class Notify
         }
     }
 
+    public function sendTwoFAOtpEmail(User $user, $userEmail)
+    {
 
-    public function sendOtpEmail(User $user,)
+        $otpCode = self::generateOtpCode();
+
+        $this->saveTwoFctOtpCode($user, $otpCode);
+
+        $mail = new PHPMailer(true);
+
+        try {
+            // Server settings
+
+            $mail->isSMTP();
+            $mail->Host     = 'sandbox.smtp.mailtrap.io';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'f8e08ed4155b95';
+            $mail->Password = '6e2a89d59d59a0';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port     = 2525;
+
+            // Recipients
+            $mail->setFrom('from@example.com', 'Your Name');
+            $mail->addAddress($userEmail);
+
+            // Content
+            $mail->isHTML(true);
+            $mail->Subject = 'Password Reset OTP';
+            $mail->Body = "Your OTP code for Two step verification is: $otpCode";
+            // $mail->Body = "<a>You can reset your password using this : $resetLink </a>";
+
+            $mail->send();
+            header("Location: Otp-Code.php");
+            // echo 'OTP code sent successfully';
+        } catch (Exception $e) {
+            echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+    }
+
+
+    public function saveTwoFctOtpCode($user, $otpCode)
+    {
+
+        $expirationTime = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+        // Check if a code already exists for the user
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt->execute([$user->getId()]);
+
+        if ($stmt->rowCount() > 0) {
+            $stmt = $this->db->prepare("UPDATE users SET totp_secret = ? WHERE id = ?");
+            $stmt->execute([$otpCode, $user->getId()]);
+        } else {
+            echo "User not found";
+        }
+    }
+
+
+    public function sendOtpEmail(User $user)
     {
         $otpCode = self::generateOtpCode();
 
@@ -146,22 +202,22 @@ class Notify
         return $otpCode;
     }
 
-    // public function resetPasswordWithOtp(User $user, $otpCode, $newPassword)
-    // {
-    //     if ($this->isValidOtp($user, $otpCode)) {
-    //         // Update the user's password in the database
-    //         $user->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
-    //         // Save the user object to the database
-    //         $this->updateUserPassword($user);
-    //         echo 'Password reset successfully';
-    //     } else {
-    //         echo 'Invalid or expired OTP code';
-    //     }
-    // }
 
     public function isValidOtp($user, $otpCode)
     {
         $stmt = $this->db->prepare("SELECT * FROM otp_codes WHERE user_id = ? AND code = ? AND expires_at > NOW()");
+        $stmt->execute([$user, $otpCode]);
+
+        if ($stmt->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function isValidOtpForTwoFa($user, $otpCode)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ? AND totp_secret = ?");
         $stmt->execute([$user, $otpCode]);
 
         if ($stmt->rowCount() > 0) {
@@ -189,21 +245,23 @@ class Notify
         return $deleted;
     }
 
+    public function updateOtpForTwoFa($userId, $otpCode)
+    {
 
+        $updated = false;
+        // Prepare statement 
+        $stmt = $this->db->prepare("UPDATE users SET totp_secret = ?,  WHERE id = ?");
 
-    // public  function resetPassword(User $user, $resetToken, $newPassword)
-    // {
-    //     if ($this->isValidToken($user, $resetToken)) {
-    //         $this->invalidateToken($user, $resetToken);
-    //         $user->setPassword(password_hash($newPassword, PASSWORD_BCRYPT)); // Hash the new password
-    //         // Update the user's password in the database
-    //         // Save the user object to the database
-    //         $this->updateUserPassword($user['password'], $user['id']);
-    //         echo 'Password reset successfully';
-    //     } else {
-    //         echo 'Invalid or expired token';
-    //     }
-    // }
+        // Execute statement with user id and code 
+        $stmt->execute([$userId, $otpCode]);
+
+        // Check if row was deleted
+        if ($stmt->rowCount() > 0) {
+            $deleted = true;
+        }
+        // Return true if deleted, false otherwise
+        return $updated;
+    }
 
     private static function generateResetToken()
     {
@@ -218,9 +276,36 @@ class Notify
     public function saveResetToken($userId, $resetToken)
     {
         $expirationTime = date('Y-m-d H:i:s', strtotime('+1 hour')); // Token expiration time: 1 hour
-        $stmt = $this->db->prepare("INSERT INTO password_resets (user_id, token, expires_at) VALUES (?, ?, ?)");
-        $stmt->execute([$userId, $resetToken, $expirationTime]);
+
+        // Check if a token already exists for the user
+        $stmt = $this->db->prepare("SELECT * FROM password_resets WHERE user_id = ?");
+        $stmt->execute([$userId]);
+        if ($stmt->rowCount() > 0) {
+            $stmt = $this->db->prepare("UPDATE password_resets SET token = ?, expires_at = ? WHERE user_id = ?");
+            $stmt->execute([$resetToken, $expirationTime, $userId]);
+        } else {
+            $stmt = $this->db->prepare("INSERT INTO password_resets (user_id, token, expires_at) VALUES (?, ?, ?)");
+            $stmt->execute([$userId, $resetToken, $expirationTime]);
+        }
     }
+
+    public function session_token($userId, $resetToken)
+    {
+
+        // Check if a token already exists for the user
+
+        $stmt = $this->db->prepare("Update users SET session_token=? WHERE id = ?");
+        $stmt->execute([$resetToken, $userId]);
+
+        if ($stmt->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
+
 
     public function saveOtpCode(User $user, $otpCode)
     {
@@ -281,12 +366,12 @@ class Notify
         $stmt->execute([$user->getId(), $resetToken]);
     }
 
-    public function updateUserPassword($password, $userId)
+    public function updateUserPassword($password, $token, $userId)
     {
 
-        $stmt = $this->db->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $stmt = $this->db->prepare("UPDATE users SET password = ? , token = ? WHERE id = ?");
 
-        $stmt->execute([$password, $userId]);
+        $stmt->execute([$password, $token, $userId]);
 
         if ($stmt->rowCount() > 0) {
             return true;
@@ -321,5 +406,19 @@ class Notify
             $row = $stmt->fetch();
             return $row;
         }
+    }
+
+    public static function generateTOTPSecret()
+    {
+        return base64_encode(random_bytes(20)); // Generate a 160-bit random key
+    }
+
+    public static function storeTOTPSecretInDatabase($userId, $totpSecret)
+    {
+        // Store the TOTP secret key in the database for the user
+        global $conn;
+        $encodedSecret = password_hash($totpSecret, PASSWORD_DEFAULT);
+        $sql = "UPDATE users SET totp_secret = '$encodedSecret' WHERE id = $userId";
+        mysqli_query($conn, $sql);
     }
 }

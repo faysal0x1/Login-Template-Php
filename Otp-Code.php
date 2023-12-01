@@ -43,7 +43,7 @@ require_once 'conf/auth_session.php';
     $session = new AuthSession();
     $session->init();
 
-    var_dump($session->get('email'));
+    // var_dump($session->get('email'));
     ?>
 
     <div class="container text-center">

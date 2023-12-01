@@ -37,24 +37,25 @@ if (isset($_GET['otp'])) {
 
 
 
-                var_dump($notify->isValidOtp($row['id'], $otpString));
-                if ($notify->isValidOtp($row['id'], $otpString)) {
+                var_dump($notify->isValidOtpForTwoFa($row['id'], $otpString));
 
-
+                if ($notify->isValidOtpForTwoFa($row['id'], $otpString)) {
 
                     $resetToken = $notify->generateResetTokenOtp();
 
-                    $notify->saveResetToken($row['id'], $resetToken);
-                    // $notify->deleteOtp($row['id'], $otpString);
+
                     AuthSession::init();
 
-                    AuthSession::set('resetToken', $resetToken);
-                    AuthSession::set('test', "test");
+                    $resetToken = $notify->generateResetTokenOtp();
 
+                    $notify->session_token($row['id'], $resetToken);
 
-                    header("Location: reset-password.php?token=$resetToken&email=$email");
+                    AuthSession::set('loggedToken', $resetToken);
+
+                    header("Location: home.php");
                 } else {
-                    echo 'OTP is not valid.';
+                    header("Location: error.php" . 'OTP is not valid.');
+                    exit();
                 }
             }
         } catch (Throwable $th) {

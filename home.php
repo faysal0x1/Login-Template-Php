@@ -7,42 +7,29 @@ require_once 'conf/auth_session.php';
 
 $session = new AuthSession();
 
-// $token = $session->get('token');
-// $email = $session->get('email');
-// $sql = "SELECT * FROM users WHERE email  = '$email'";
+// $session->checkLoginStatus();
 
-// $result = mysqli_query($conn, $sql);
 
-// if (mysqli_num_rows($result) === 1) {
-
-//    $row = mysqli_fetch_assoc($result);
-//    $id = $row['id'];
-//    if ($token != $row['token']) {
-//       header('location:login.php');
-//    }
+// if ($session->get('loggedToken') == null) {
+//    header('location:index.php');
+// }else{
+//    $session->checkLoginStatus();
 // }
-
-// $session->authenticated();
-
-
-if ($session->get('token') == null) {
-   header('location:index.php');
-}
 // AuthSession::checkLoginStatus();
 
 
 // $session->checkLoginStatus();
 
-$session->get('email');
+echo $session->get('email');
+echo "<br>";
+echo "<br>";
+echo $session->get('name');
 echo "<br>";
 echo "<br>";
 echo $session->get('id');
 echo "<br>";
 echo "<br>";
-echo $session->get('id');
-echo "<br>";
-echo "<br>";
-echo $session->get('token');
+echo $session->get('loggedToken');
 echo "<br>";
 echo "<br>";
 

@@ -12,12 +12,25 @@ $dbUser = "root";
 $dbPassword = "";
 $dbName = "php_login";
 
-$_GET['token'];
-$_SESSION['token'] = $_GET['token'];
 
-$token = $_SESSION['token'];
-$email = $_SESSION['email'];
 
+
+if (isset($_GET['token']) || isset($_SESSION['token'])) {
+
+    if (isset($_GET['token'])) {
+        $_SESSION['token'] = $_GET['token'];
+        $_SESSION['email'] = $_GET['email'];
+        $token = $_SESSION['token'];
+        $email = $_SESSION['email'];
+    } else {
+        $token = $_SESSION['token'];
+        $email = $_SESSION['email'];
+    }
+} else {
+    // var_dump($_SESSION['token']);
+    echo "Token not provided.";
+    exit;
+}
 
 $db = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPassword);
 
@@ -25,79 +38,46 @@ $notify = new Notify($db);
 
 $userId = $notify->getUserId($email);
 
+$error = "";
 
-if ($userId) {
-    if (isset($_POST['password']) && isset($_POST['cPassword'])) {
+$data = $notify->getUser($email);
+// var_dump($data);
 
-        $password = $_POST['password'];
-        $cPassword = $_POST['cPassword'];
-
-        if ($password == $cPassword) {
-
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-            if ($notify->updateUserPassword($hashedPassword, $userId)) {
-
-                $data= $notify->getUser($email);
-
+if (isset($userId)) {
+   
+    if ($notify->isValidTokenForOtp($userId, $token)) {
+        if (isset($_POST['password']) && isset($_POST['cPassword'])) {
+            $password = $_POST['password'];
+            $cPassword = $_POST['cPassword'];
+            if ($password == $cPassword) {
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
                 $token = md5(uniqid(rand(), true));
 
-                AuthSession::set('id', $conn->insert_id);
-                AuthSession::set('name', $data['name']);
-                AuthSession::set('email', $data['email']);
-                AuthSession::set('token', $token);
-                header("Location: Home.php");
-                exit();
+                if ($notify->updateUserPassword($hashedPassword, $token, $userId)) {
+
+                    $data = $notify->getUser($email);
+
+                    // AuthSession::destroy();
+              
+                    header("Location: index.php");
+                    exit();
+                } else {
+                    $error = "Update Issue";
+                }
             } else {
-                $error = "Update Issue";
+                $error = "Passwords don't match!";
+              
             }
-        } else {
-            $error = "Passwords don't match!";
         }
+    } else {
+        var_dump($token);
     }
+} else {
+    var_dump($userId);
 }
 
-// if (isset($token)) {
 
-//     // var_dump($token);
-
-//     if (!isset($_GET['email'])) {
-//         $error = "Invalid Url";
-//     } else {
-//         $email = $_GET['email'];
-
-//         var_dump($email);
-
-
-
-//         var_dump($userId);
-
-// if ($userId) {
-//     if (isset($_POST['password']) && isset($_POST['cPassword'])) {
-
-//         $password = $_POST['password'];
-//         $cPassword = $_POST['cPassword'];
-
-//         if ($password == $cPassword) {
-
-//             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-//             if ($notify->updateUserPassword($hashedPassword, $userId)) {
-//                 header("Location: index.php");
-//                 exit();
-//             } else {
-//                 $error = "Update Issue";
-//             }
-//         } else {
-//             $error = "Passwords don't match!";
-//         }
-//     }
-// }
-//     }
-// } else {
-//     $error = "Something went wrong! sfs";
-// }
 
 if (isset($_POST['password']) && isset($_POST['cPassword'])) {
 
@@ -143,6 +123,7 @@ if (isset($_POST['password']) && isset($_POST['cPassword'])) {
                     if (isset($error)) {
                         echo $error;
                     }
+                  
                     ?>
                 </label>
 
