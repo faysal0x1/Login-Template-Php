@@ -8,7 +8,7 @@ require_once 'conf/auth_session.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap5.css">
     <style>
         body {
             height: 100vh;
@@ -37,22 +37,16 @@ require_once 'conf/auth_session.php';
 </head>
 
 <body>
-
     <?php
     // echo AuthSession::get('email');
     $session = new AuthSession();
     $session->init();
-
     $email = $session->get('email');
     if (!$email) {
         header('Location: login.php');
         exit;
     }
-
-
-
     ?>
-
     <div class="container text-center">
         <h2 class="mb-4">Two Step Verification</h2>
         <form action="twoFactor.php" method="post" id="otpForm">
@@ -68,7 +62,7 @@ require_once 'conf/auth_session.php';
         </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/bootstrap5.js"></script>
     <script>
         function submitOtpForm() {
             // Get all OTP input values
@@ -76,11 +70,9 @@ require_once 'conf/auth_session.php';
 
             // Convert the NodeList to an array and join the values into a single string
             var otpString = Array.from(otpValues).map(input => input.value).join('');
-
             // Redirect to process_otp.php with the OTP string as a query parameter
             window.location.href = 'twofactor_process.php?otp=' + otpString;
         }
-
 
         document.addEventListener("input", function(e) {
             if (e.target.classList.contains("otp-input")) {

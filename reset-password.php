@@ -6,14 +6,10 @@ include_once "conf/auth_session.php";
 
 $session = new AuthSession();
 $session->init();
-
 $dbHost = "localhost";
 $dbUser = "root";
 $dbPassword = "";
 $dbName = "php_login";
-
-
-
 
 if (isset($_GET['token']) || isset($_SESSION['token'])) {
 
@@ -44,7 +40,7 @@ $data = $notify->getUser($email);
 // var_dump($data);
 
 if (isset($userId)) {
-   
+
     if ($notify->isValidTokenForOtp($userId, $token)) {
         if (isset($_POST['password']) && isset($_POST['cPassword'])) {
             $password = $_POST['password'];
@@ -59,7 +55,7 @@ if (isset($userId)) {
                     $data = $notify->getUser($email);
 
                     // AuthSession::destroy();
-              
+
                     header("Location: index.php");
                     exit();
                 } else {
@@ -67,7 +63,6 @@ if (isset($userId)) {
                 }
             } else {
                 $error = "Passwords don't match!";
-              
             }
         }
     } else {
@@ -77,17 +72,13 @@ if (isset($userId)) {
     var_dump($userId);
 }
 
-
-
 if (isset($_POST['password']) && isset($_POST['cPassword'])) {
 
     $password = $_POST['password'];
     $cPassword = $_POST['cPassword'];
 }
 
-
 ?>
-
 
 
 <html>
@@ -123,7 +114,7 @@ if (isset($_POST['password']) && isset($_POST['cPassword'])) {
                     if (isset($error)) {
                         echo $error;
                     }
-                  
+
                     ?>
                 </label>
 
@@ -144,7 +135,7 @@ if (isset($_POST['password']) && isset($_POST['cPassword'])) {
         var password = document.getElementById("password");
         var confirm_password = document.getElementById("confirmPassword");
 
-        document.getElementById('signupLogo').src = "https://s3-us-west-2.amazonaws.com/shipsy-public-assets/shipsy/SHIPSY_LOGO_BIRD_BLUE.png";
+        document.getElementById('signupLogo').src = "img/SHIPSY_LOGO_BIRD_BLUE.png";
         enableSubmitButton();
 
         function validatePassword() {
@@ -179,13 +170,11 @@ if (isset($_POST['password']) && isset($_POST['cPassword'])) {
                     return false;
                 }
             }
-
             if (!validatePassword()) {
                 return false;
             } else {
 
             }
-
             // onSignup();
             enableSubmitButton();
         }

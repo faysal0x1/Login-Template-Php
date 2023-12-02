@@ -1,4 +1,4 @@
-<?php 
+<?php
 require_once "./conf/auth_session.php";
 
 include "./conf/db_con.php";
@@ -14,13 +14,8 @@ AuthSession::checkLoginStatus();
   <title>Login 04</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/fontawesome.css">
+  <link rel="stylesheet" href="css/bootstrap5.css">
   <style>
     .error-message {
       color: red;
@@ -31,9 +26,6 @@ AuthSession::checkLoginStatus();
 </head>
 
 <body>
-
-
-
   <section class="ftco-section">
     <div class="container">
       <div class="row justify-content-center">
@@ -57,7 +49,6 @@ AuthSession::checkLoginStatus();
                   <h3 class="mb-4">Sign In</h3>
                 </div>
               </div>
-
 
               <form action="login.php" method="post" class="signin-form">
                 <div class="form-group mb-3">

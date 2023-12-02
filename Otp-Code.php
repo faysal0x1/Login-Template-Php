@@ -8,7 +8,7 @@ require_once 'conf/auth_session.php';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/bootstrap5.css">
     <style>
         body {
             height: 100vh;
@@ -43,7 +43,6 @@ require_once 'conf/auth_session.php';
     $session = new AuthSession();
     $session->init();
 
-    // var_dump($session->get('email'));
     ?>
 
     <div class="container text-center">
@@ -59,7 +58,7 @@ require_once 'conf/auth_session.php';
         </form>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/bootstrap5.js"></script>
     <script>
         function submitOtpForm() {
             // Get all OTP input values

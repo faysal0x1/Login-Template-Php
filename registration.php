@@ -6,10 +6,6 @@ include "./conf/db_con.php";
 
 AuthSession::checkLoginStatus();
 
-
-
-
-
 // Define variables and initialize them
 $name = $username = $email = $password = $cPassword = "";
 $nameErr = $usernameErr = $emailErr = $passwordErr = $cPasswordErr = "";
@@ -78,7 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -86,10 +81,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   <title>Login 04</title>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
-
-  <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet" />
-
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="css/fontawesome.css">
 
   <link rel="stylesheet" href="css/style.css" />
 </head>

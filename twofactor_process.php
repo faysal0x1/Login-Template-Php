@@ -24,7 +24,6 @@ if (isset($_GET['otp'])) {
         echo 'Email not found.';
         exit;
     } else {
-
         try {
             $sql = "SELECT * FROM users WHERE email  = '$email'";
             $result = $conn->query($sql);
@@ -63,8 +62,6 @@ if (isset($_GET['otp'])) {
             echo $th;
         }
     }
-
-
     // Process the OTP string as needed
     // For now, let's just echo it back
     echo 'Received OTP: ' . $otpString;

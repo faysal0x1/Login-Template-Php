@@ -1,22 +1,18 @@
 <?php
 
-
 include "./conf/db_con.php";
 require_once 'conf/auth_session.php';
-
 
 $session = new AuthSession();
 
 // $session->checkLoginStatus();
 
-
-// if ($session->get('loggedToken') == null) {
-//    header('location:index.php');
-// }else{
-//    $session->checkLoginStatus();
-// }
-// AuthSession::checkLoginStatus();
-
+if ($session->get('loggedToken') == null) {
+   header('location:index.php');
+}else{
+   $session->checkLoginStatus();
+}
+AuthSession::checkLoginStatus();
 
 // $session->checkLoginStatus();
 
@@ -33,9 +29,7 @@ echo $session->get('loggedToken');
 echo "<br>";
 echo "<br>";
 
-
 ?>
-
 
 
 <!DOCTYPE html>
@@ -48,7 +42,6 @@ echo "<br>";
 </head>
 
 <body>
-
 
    <p> <a href="logout.php">Logout</a></p>
 

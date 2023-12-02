@@ -64,11 +64,13 @@ class Notify
         $resetToken = self::generateResetToken();
         $this->saveResetToken($user, $resetToken);
 
-        $resetLink = "http://localhost/Fiverr/Login-Php/reset-password.php?token=$resetToken";
+        // Changable for future usages
+        // $resetLink = "your-site-link/reset-password.php?token=$resetToken";
 
         $mail = new PHPMailer(true);
         try {
 
+            // changable for future usages
             $mail->isSMTP();
             $mail->Host     = 'sandbox.smtp.mailtrap.io';
             $mail->SMTPAuth = true;
@@ -88,7 +90,7 @@ class Notify
             $mail->Body    = "Click the following link to reset your password: $resetLink";
 
             $mail->send();
-            echo 'Password reset email sent successfully';
+            // echo 'Password reset email sent successfully';
         } catch (Exception $e) {
             echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
@@ -105,7 +107,7 @@ class Notify
 
         try {
             // Server settings
-
+            // changable for future usages
             $mail->isSMTP();
             $mail->Host     = 'sandbox.smtp.mailtrap.io';
             $mail->SMTPAuth = true;
@@ -160,16 +162,17 @@ class Notify
 
         $resetToken = self::generateResetToken();
 
+        // changable for youur future usages
 
         // $this->saveResetToken($user, $resetToken);
-
-        $resetLink = "http://localhost/Fiverr/Login-Php/reset-password.php";
+        // $resetLink = "Your-site-link/reset-password.php";
 
         $mail = new PHPMailer(true);
 
         try {
-            // Server settings
 
+            // Server settings
+            // Need to give site smtp settings here
             $mail->isSMTP();
             $mail->Host     = 'sandbox.smtp.mailtrap.io';
             $mail->SMTPAuth = true;
@@ -186,7 +189,6 @@ class Notify
             $mail->isHTML(true);
             $mail->Subject = 'Password Reset OTP';
             $mail->Body = "Your OTP code is: $otpCode";
-            // $mail->Body = "<a>You can reset your password using this : $resetLink </a>";
 
             $mail->send();
             header("Location: Otp-Code.php");
@@ -196,12 +198,24 @@ class Notify
         }
     }
 
+    /**
+     * Generating Otp Code
+     *
+     * @return int
+     */
     public function generateOtpCode()
     {
         $otpCode = rand(100000, 999999);
         return $otpCode;
     }
 
+    /**
+     * Check if otp code is valid
+     * 
+     * @param User $user
+     * @param int $otpCode
+     * @return bool
+     */
 
     public function isValidOtp($user, $otpCode)
     {
@@ -215,6 +229,15 @@ class Notify
         }
     }
 
+    /**
+     * Check if otp code is valid for Two Factor Authentication
+     * 
+     * @param User $user
+     * @param string $otpCode
+     * @return bool
+     * 
+     */
+
     public function isValidOtpForTwoFa($user, $otpCode)
     {
         $stmt = $this->db->prepare("SELECT * FROM users WHERE id = ? AND totp_secret = ?");
@@ -226,6 +249,15 @@ class Notify
             return false;
         }
     }
+
+    /**
+     * Delete otp code
+     * 
+     * @param int $userId
+     * @param int $otpCode
+     * @return bool
+     * 
+     */
 
     public function deleteOtp($userId, $otpCode)
     {
@@ -245,6 +277,15 @@ class Notify
         return $deleted;
     }
 
+    /**
+     * Update otp code for Two Factor Authentication
+     * 
+     * @param int $userId
+     * @param int $otpCode
+     * @return bool
+     * 
+     */
+
     public function updateOtpForTwoFa($userId, $otpCode)
     {
 
@@ -263,15 +304,33 @@ class Notify
         return $updated;
     }
 
+    /**
+     * Generate Reset Token
+     * @return string 
+     */
+
+
     private static function generateResetToken()
     {
         return bin2hex(random_bytes(32));
     }
 
+    /**
+     * Generate Reset Token for Otp
+     * @return string
+     */
+
     public function generateResetTokenOtp()
     {
         return bin2hex(random_bytes(32));
     }
+
+    /**
+     * Save Reset Token
+     * @param int $userId
+     * @param string $resetToken
+     * Excute statement
+     */
 
     public function saveResetToken($userId, $resetToken)
     {
@@ -289,6 +348,13 @@ class Notify
         }
     }
 
+    /**
+     * Session Token
+     *
+     * @param int $userId
+     * @param string $resetToken
+     * @return bool
+     */
     public function session_token($userId, $resetToken)
     {
 
@@ -305,6 +371,13 @@ class Notify
     }
 
 
+
+    /**
+     * Save Otp Code
+     * @param User $user
+     * @param string $otpCode
+     * Excute statement
+     */
 
 
     public function saveOtpCode(User $user, $otpCode)
@@ -326,12 +399,30 @@ class Notify
         }
     }
 
+    /**
+     * Validate Reset Token
+     * @param User $user
+     * @param string $resetToken
+     * @return bool
+     */
+
     private function isValidToken(User $user, $resetToken)
     {
         $stmt = $this->db->prepare("SELECT * FROM password_resets WHERE user_id = ? AND token = ? AND expires_at > NOW()");
         $stmt->execute([$user->getId(), $resetToken]);
-        return $stmt->rowCount() > 0;
+        if ($stmt->rowCount() > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
+
+    /**
+     * Validate Reset Token for Otp using user id
+     * @param int $userId
+     * @param string $resetToken
+     * @return int
+     */
 
     public function isValidTokenForOtp($userId, $resetToken)
     {
@@ -343,7 +434,12 @@ class Notify
             return false;
         }
     }
-
+    /**
+     * Validate Reset Token for Otp using user object
+     * @param User $user
+     * @param string $resetToken
+     * @return int
+     */
     public function isValidOtpCode(User $user, $otpCode)
     {
 
@@ -351,6 +447,13 @@ class Notify
         $stmt->execute([$user->getId(), $otpCode]);
         return $stmt->rowCount() > 0;
     }
+
+    /**
+     * Invalidate Otp
+     * @param User $user
+     * @param string $otpCode
+     * @return bool
+     */
 
     public function inValidOtp(User $user, $otpCode)
     {

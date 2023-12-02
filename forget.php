@@ -1,6 +1,5 @@
 <?php
 
-
 include_once './conf/db_con.php';
 include_once './conf/auth_session.php';
 
@@ -31,8 +30,6 @@ if (isset($_POST['email'])) {
         // Session
         AuthSession::init();
         AuthSession::set('email', $email);
-
-
 
         $notify->sendOtpEmail($user);
     } else {

@@ -60,28 +60,16 @@ if (isset($_POST['email']) && isset($_POST['password'])) {
                         $dbName = "php_login";
                         $db = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPassword);
 
-
-                        // $user = new User($row['id'], $row['name'], $row['email']);
-                        // $notify = new Notify($db);
-
-                        // var_dump($row);
-
-
                         $db = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPassword);
 
-                        $user = new User($row['id'], $row['name'], $row['email'],  password_hash($row['password'], PASSWORD_BCRYPT));
-                        // var_dump($user);
+                        $user = new User($row['id'], $row['name'], $row['email'], password_hash($row['password'], PASSWORD_BCRYPT));
                         $notify = new Notify($db);
 
                         var_dump($notify);
                         // Session
                         AuthSession::init();
                         AuthSession::set('email', $email);
-
                         $notify->sendTwoFAOtpEmail($user, $email);
-
-
-
                         header("Location: twofactor.php");
                     } else {
                         AuthSession::init();

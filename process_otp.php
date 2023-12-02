@@ -34,23 +34,16 @@ if (isset($_GET['otp'])) {
                 $db = new PDO("mysql:host=$dbHost;dbname=$dbName", $dbUser, $dbPassword);
                 var_dump($row);
                 $notify = new Notify($db);
-
-
-
                 var_dump($notify->isValidOtp($row['id'], $otpString));
                 if ($notify->isValidOtp($row['id'], $otpString)) {
 
-
-
                     $resetToken = $notify->generateResetTokenOtp();
-
                     $notify->saveResetToken($row['id'], $resetToken);
                     // $notify->deleteOtp($row['id'], $otpString);
                     AuthSession::init();
 
                     AuthSession::set('resetToken', $resetToken);
                     AuthSession::set('test', "test");
-
 
                     header("Location: reset-password.php?token=$resetToken&email=$email");
                 } else {
@@ -62,7 +55,6 @@ if (isset($_GET['otp'])) {
             echo $th;
         }
     }
-
 
     // Process the OTP string as needed
     // For now, let's just echo it back
